@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css">
+    <title>Business Info List</title>
+    <style>
+        .disabled {
+            pointer-events: none;
+            cursor: not-allowed;
+            color: #999; /* 비활성화된 색상으로 변경하거나 다른 스타일 적용 가능 */
+        }
+    </style>
+</head>
+<body>
+<h2>Business Info List</h2>
+<form class="form" action="/kiosk_update/admin/business/info" method="get">
+    <div>
+        <input th:value="${businessNumber}" type="text" name="businessNumber">
+        <input type="submit" value="BusinessNumber로 검색">
+        <br>
+        <input th:value="${kioskType}" type="text" name="kioskType">
+        <input type="submit" value="KioskType으로 검색">
+    </div>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>no</th>
+        <th>Business Number</th>
+        <th>Kiosk Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="businessInfo, iterStat : ${businessInfoList}">
+        <td th:text="${iterStat.index + businessInfoList.number * 10 + 1}"></td>
+        <td th:text="${businessInfo.businessNumber}"></td>
+        <td th:text="${businessInfo.kioskType}"></td>
+        <td>
+            <a th:href="@{/kiosk_update/admin/business/update/{businessInfoId}(businessInfoId=${businessInfo.businessInfoId})}">수정하기</a>
+        </td>
+        <td>
+            <form th:action="@{/kiosk_update/admin/business/info/delete}" method="post">
+                <input th:value="${businessInfo.businessInfoId}" name="businessInfoId" type="hidden" /><!--th:field="*{businessNumber}"-->
+                <input th:value="${businessNumber}" name="businessNumber" type="hidden" />
+                <input th:value="${kioskType}" name="kioskType" type="hidden" />
+                <input th:value="${currentPage}" name="currentPage" type="hidden" />
+                <input type="submit" value="삭제하기">
+            </form>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+
+<button type="button" onclick="location.href='/kiosk_update/admin/business/info/create'">새로운 사업자번호 등록하기</button>
+<nav style="text-align: center;">
+<!-- 페이징처리 시작 -->
+<div th:if="${!businessInfoList.isEmpty()}">
+    <ul>
+        <li> <!--처음 버튼-->
+            <a th:if="${businessNumber!=null}" th:href="@{./info(businessNumber = ${businessNumber}, page = ${1})}">처음</a>
+            <a th:if="${kioskType!=null}" th:href="@{./info(kioskType = ${kioskType}, page = ${1})}">처음</a>
+            <a th:if="${businessNumber==null && kioskType==null}" th:href="@{./info(page = ${1})}">처음</a>
+        </li>
+
+        <li th:if="${businessInfoList.number > 0}"> <!--이전 버튼-->
+            <a th:if="${businessNumber!=null}" th:href="@{./info(businessNumber = ${businessNumber}, page = ${businessInfoList.number })}">이전</a>
+            <a th:if="${kioskType!=null}" th:href="@{./info(kioskType = ${kioskType}, page = ${businessInfoList.number })}">이전</a>
+            <a th:if="${businessNumber==null && kioskType==null}" th:href="@{./info(page = ${businessInfoList.number })}">이전</a>
+        </li>
+
+        <!--숫자 버튼-->
+        <li th:each="page: ${#numbers.sequence(0, businessInfoList.totalPages - 1)}">
+            <a th:if="${businessNumber!=null}" th:href="@{./info(businessNumber = ${businessNumber}, page = ${page+1})}" th:text="${page+1}"/>
+            <a th:if="${kioskType!=null}" th:href="@{./info(kioskType = ${kioskType}, page = ${page+1})}"  th:text="${page+1}"/>
+            <a th:if="${businessNumber==null && kioskType==null}" th:href="@{./info(page = ${page+1})}"  th:text="${page+1}"/>
+        </li>
+
+        <li th:if="${businessInfoList.number+2 <= businessInfoList.totalPages}"> <!--다음 버튼-->
+            <a th:if="${businessNumber!=null}" th:href="@{./info(businessNumber = ${businessNumber}, page = ${businessInfoList.number + 2})}">다음</a>
+            <a th:if="${kioskType!=null}" th:href="@{./info(kioskType = ${kioskType}, page = ${businessInfoList.number + 2})}">다음</a>
+            <a th:if="${businessNumber==null && kioskType==null}" th:href="@{./info(page = ${businessInfoList.number + 2})}">다음</a>
+        </li>
+
+        <li> <!--마지막 버튼-->
+            <a th:if="${businessNumber!=null}" th:href="@{./info(businessNumber = ${businessNumber}, page = ${businessInfoList.totalPages})}">끝</a>
+            <a th:if="${kioskType!=null}" th:href="@{./info(kioskType = ${kioskType}, page = ${businessInfoList.totalPages})}">끝</a>
+            <a th:if="${businessNumber==null && kioskType==null}" th:href="@{./info(page = ${businessInfoList.totalPages})}">끝</a>
+        </li>
+
+    </ul>
+</div>
+<!-- 페이징처리 끝 -->
+</nav>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 외부 CSS 파일 링크 -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <title>Kiosk Management</title>
+
+
+</head>
+
+<body>
+<h1>Moki Update</h1>
+<div>
+    <a th:href="@{/kiosk_update/admin/upload}" class="button">앱 업로드</a>
+</div>
+<div>
+    <a th:href="@{/kiosk_update/admin/kiosk/info}" class="button">키오스크 앱 정보 확인</a>
+</div>
+<div>
+    <a th:href="@{/kiosk_update/admin/business/info}" class="button">비즈니스 정보 확인</a>
+</div>
+</body>
+</html>
